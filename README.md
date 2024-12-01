@@ -1,21 +1,18 @@
-# Aoc2024Elixir
+# Advent of Code
 
-**TODO: Add description**
+## Mix tasks
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `aoc2024_elixir` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:aoc2024_elixir, "~> 0.1.0"}
-  ]
-end
 ```
+# Generates files for day 1
+mix gen_day 1
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/aoc2024_elixir>.
+# Runs day 1 part 1
+mix solve 1 1
+
+# Runs day 1 part 2
+mix solve 1 2
+
+# Runs day 1 both parts
+mix solve 1
+```
 
