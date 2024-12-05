@@ -1,24 +1,20 @@
 defmodule Day05.Day05 do
   def parse_file() do
-    {rules, updates} =
-      File.read!("lib/day05/input.txt")
+    [rules, updates] =
+      File.read!("lib/day05/example.txt")
       |> String.split("\n\n", trim: true)
       |> Enum.map(&String.split(&1, "\n", trim: true))
-      |> List.to_tuple()
 
     rules =
-      rules
-      |> Enum.flat_map(fn rule ->
-        [a, b] = String.split(rule, "|") |> Enum.map(&String.to_integer/1)
-        [{{a, b}, true}, {{b, a}, false}]
-      end)
-      |> Map.new()
+      for rule <- rules, into: MapSet.new() do
+        [a, b] = String.split(rule, "|")
+        {String.to_integer(a), String.to_integer(b)}
+      end
 
     updates =
-      updates
-      |> Enum.map(fn line ->
-        String.split(line, ",") |> Enum.map(&String.to_integer/1)
-      end)
+      for update <- updates do
+        String.split(update, ",") |> Enum.map(&String.to_integer/1)
+      end
 
     {rules, updates}
   end
@@ -27,28 +23,28 @@ defmodule Day05.Day05 do
     {rules, updates} = parse_file()
 
     updates
-    |> Enum.filter(&is_valid_update(&1, rules))
-    |> add_middle_numbers()
+    |> Enum.filter(&is_sorted(&1, rules))
+    |> sum_middle_numbers()
   end
 
   def part_2() do
     {rules, updates} = parse_file()
 
     updates
-    |> Enum.filter(fn update -> !is_valid_update(update, rules) end)
-    |> Enum.map(&Enum.sort(&1, fn a, b -> Map.get(rules, {a, b}, true) end))
-    |> add_middle_numbers()
+    |> Enum.reject(&is_sorted(&1, rules))
+    |> Enum.map(&Enum.sort(&1, fn a, b -> MapSet.member?(rules, {a, b}) end))
+    |> sum_middle_numbers()
   end
 
-  defp is_valid_update([_], _), do: true
+  defp is_sorted([_], _), do: true
 
-  defp is_valid_update([head | tail], rules) do
-    Map.get(rules, {head, hd(tail)}, true) and is_valid_update(tail, rules)
+  defp is_sorted([head | tail], rules) do
+    MapSet.member?(rules, {head, hd(tail)}) and is_sorted(tail, rules)
   end
 
-  defp add_middle_numbers([]), do: 0
+  defp sum_middle_numbers([]), do: 0
 
-  defp add_middle_numbers([head | tail]) do
-    Enum.at(head, div(length(head), 2)) + add_middle_numbers(tail)
+  defp sum_middle_numbers([head | tail]) do
+    Enum.at(head, div(length(head), 2)) + sum_middle_numbers(tail)
   end
 end
