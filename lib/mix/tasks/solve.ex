@@ -24,15 +24,35 @@ defmodule Mix.Tasks.Solve do
   end
 
   defp solve_part_1(module_name) do
-    IO.inspect(module_name.part_1(), label: "\nPart 1")
+    {time, result} = :timer.tc(&module_name.part_1/0)
+    IO.puts("\nPart 1 (#{format_duration(time)})")
+    IO.inspect(result)
   end
 
   defp solve_part_2(module_name) do
-    IO.inspect(module_name.part_2(), label: "\nPart 2")
+    {time, result} = :timer.tc(&module_name.part_2/0)
+    IO.puts("\nPart 2 (#{format_duration(time)})")
+    IO.inspect(result)
   end
 
   defp solve_all(module_name) do
     solve_part_1(module_name)
     solve_part_2(module_name)
+  end
+
+  defp format_duration(us) when is_integer(us) do
+    cond do
+      us < 1_000 ->
+        # Microseconds
+        "#{us} µs"
+
+      us < 1_000_000 ->
+        ms = us / 1_000
+        "#{Float.round(ms, 2)} ms"
+
+      true ->
+        s = us / 1_000_000
+        "#{Float.round(s, 2)} seconds"
+    end
   end
 end
